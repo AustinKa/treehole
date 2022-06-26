@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.com.treehole.treeholecore.mapper.TreeholeChatMapper">
+
+
+    <select id="selectByUserIdOrAnotherId" resultType="net.com.treehole.treeholecore.entity.TreeholeChat">
+        SELECT
+            `CHAT_ID`,
+            `USER_ID`,
+            `ANOTHER_ID`,
+            `TENANT_ID`,
+            `REVISION`,
+            `CREATED_BY`,
+            `CREATED_TIME`,
+            `UPDATED_BY`,
+            `UPDATED_TIME`,
+            `DEL_STATUS`
+        FROM
+            treehole_chat
+        <where>
+             DEL_STATUS = 0
+            <if test="userId != null and userId > 0">
+              and   USER_ID = #{userId}
+            </if>
+            <if test="anotherId != null and anotherId > 0">
+                AND ANOTHER_ID = #{anotherId}
+            </if>
+        </where>
+            UNION
+        SELECT
+            `CHAT_ID`,
+            `USER_ID`,
+            `ANOTHER_ID`,
+            `TENANT_ID`,
+            `REVISION`,
+            `CREATED_BY`,
+            `CREATED_TIME`,
+            `UPDATED_BY`,
+            `UPDATED_TIME`,
+            `DEL_STATUS`
+        FROM
+            treehole_chat
+        <where>
+            DEL_STATUS = 0
+            <if test="userId != null and userId > 0">
+                and   ANOTHER_ID = #{userId}
+            </if>
+            <if test="anotherId != null and anotherId > 0">
+                AND USER_ID = #{anotherId}
+            </if>
+        </where>
+
+    </select>
+</mapper>
