@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -27,12 +30,15 @@ public class TreeholeUserFriends implements Serializable {
 
     @ApiModelProperty("好友表ID")
     @TableId(value = "friends_id",type = IdType.ASSIGN_ID)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long friendsId;
 
     @ApiModelProperty("用户ID")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long fromId;
 
     @ApiModelProperty("好友ID")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long toId;
 
     @ApiModelProperty("好友备注")

@@ -7,8 +7,10 @@ import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.com.treehole.treeholecore.entity.TreeholeChat;
 import net.com.treehole.treeholecore.entity.TreeholeChatCommunication;
+import net.com.treehole.treeholecore.entity.enums.UserState;
 import net.com.treehole.treeholecore.service.ITreeholeChatCommunicationService;
 import net.com.treehole.treeholecore.service.ITreeholeChatService;
+import net.com.treehole.treeholecore.service.ITreeholeUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +32,8 @@ import org.yeauty.pojo.Session;
 @Slf4j
 public class WebSocketServer {
     @Autowired
+    private ITreeholeUserService iTreeholeUserService;
+    @Autowired
     private ITreeholeChatService iTreeholeChatService;
 
     @Autowired
@@ -48,6 +52,8 @@ public class WebSocketServer {
     @OnOpen
     public void onOpen(Session session,@PathVariable String userId){
         sessions.put(userId, session);
+        // 用户状态切换为在线(1)
+        iTreeholeUserService.userStatusSwitchover(Long.valueOf(userId), UserState.ON_LINE.getState());
         log.info("有新用户加入,username={}，当前在线人数为: {}", userId, sessions.size());
         JSONObject jsonObject = new JSONObject();
         JSONArray arry = new JSONArray();
@@ -65,6 +71,8 @@ public class WebSocketServer {
      */
     @OnClose
     public void onClose(Session session, @PathVariable String userId){
+        // 用户离线切换为在线(0)
+        iTreeholeUserService.userStatusSwitchover(Long.valueOf(userId), UserState.OFF_LINE.getState());
         sessions.remove(userId);
         log.info("有一连接关闭，移除username={}用户，当前在线人数为：{}", userId, sessions.size());
     }

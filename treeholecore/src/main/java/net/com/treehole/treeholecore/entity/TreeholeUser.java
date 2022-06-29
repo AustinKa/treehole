@@ -62,4 +62,8 @@ public class TreeholeUser implements Serializable {
     @TableField(value = "del_status",fill = FieldFill.INSERT)
     private Integer delStatus;
 
+    @ApiModelProperty("用户状态0不在线1在线2隐身")
+    @TableField(value = "state")
+    private Integer state;
+
 }
